@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  <head>
+    <title>Snake</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      canvas {
+        border: 1px solid #ccc;
+        float: left;
+        margin-right: 10px;
+      }
+      #level {
+        font-size: 1.2em;
+        font-family: sans-serif;
+        font-weight: bold
+      }
+      #level, #actions {
+        margin-bottom: 7px;
+        text-align: center;
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+      #div_left {
+        float: left;
+        border: 1px solid #ccc;
+        width: 200px;
+        height: 700px;
+        padding: 8px;
+      }
+      html {
+        padding-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas width="700" height="700"></canvas>
+    <div id="div_left">
+      <div id="level">1</div>
+      <div id="actions">
+        <button>Start</button>
+        <button>Pause</button>
+        <button>Resume</button>
+      </div>
+    </div>
+  </body>
+</html>
