@@ -12,6 +12,27 @@ window.onload = init;
 
 document.querySelector("body").addEventListener('keydown', function (event) {
   event.preventDefault();
+  if (event.which == 37) {
+    if (dx == 0) {
+      dx = -gridDimension;
+      dy = 0;
+    }
+  } else if (event.which == 38) {
+    if (dy == 0) {
+      dy = -gridDimension;
+      dx = 0;
+    }
+  } else if (event.which == 39) {
+    if (dx == 0) {
+      dx = gridDimension;
+      dy = 0;
+    }
+  } else if (event.which == 40) {
+    if (dy == 0) {
+      dy = gridDimension;
+      dx = 0;
+    }
+  }
   //37 gauche
   //38 haut
   //39 droite
@@ -51,8 +72,10 @@ function init() {
   document.querySelector("#btn_start").disabled = false;
   document.querySelector("#btn_pause").disabled = true;
   document.querySelector("#btn_resume").disabled = true;
-  var head = new Square(0, 0);
+  var head = new Square(-gridDimension, 0);
   squares.push(head);
+  squares.push(new Square(0, 0));
+  squares.push(new Square(0, 0));
   canvas = document.querySelector("canvas");
   context = canvas.getContext('2d');
   dx = gridDimension;
@@ -80,11 +103,21 @@ function repaint() {
 
 function paintSnake() {
   //  decrease opacity with length
-  for (var i = 0; i < squares.length; i++) {
-    squares[i].x += dx;
-    squares[i].y += dy;
+  var head = squares[0];
+  var oldX = head.x;
+  var oldY = head.y;
+  head.x += dx;
+  head.y += dy;
+  context.strokeStyle = head.color;
+  context.strokeRect(head.x, head.y, head.width, head.height);
+  for (var i = 1; i < squares.length; i++) {
+    var x = squares[i].x, y = squares[i].y;
+    squares[i].x = oldX;
+    squares[i].y = oldY;
+    oldX = x;
+    oldY = y;
     context.strokeStyle = squares[i].color;
-    context.strokeRect(squares[i].x, squares[i].y, squares[i].width, squares[i].height)
+    context.strokeRect(squares[i].x, squares[i].y, squares[i].width, squares[i].height);
   }
 }
 
@@ -98,7 +131,7 @@ function changeFoodPosition() {
   food.y = y;
 }
 
-function showFood() {  
+function showFood() {
   context.fillStyle = food.color;
   context.fillRect(food.x, food.y, food.width, food.height);
 }
