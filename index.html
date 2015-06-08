@@ -10,6 +10,9 @@ and open the template in the editor.
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+      *, *:before, *:after {
+        box-sizing: border-box;
+      }
       canvas {
         border: 1px solid #ccc;
         float: left;
@@ -30,7 +33,7 @@ and open the template in the editor.
         float: left;
         border: 1px solid #ccc;
         width: 200px;
-        height: 700px;
+        height: 500px;
         padding: 8px;
       }
       html {
@@ -39,14 +42,15 @@ and open the template in the editor.
     </style>
   </head>
   <body>
-    <canvas width="700" height="700"></canvas>
+    <canvas width="500" height="500"></canvas>
     <div id="div_left">
       <div id="level">1</div>
       <div id="actions">
-        <button>Start</button>
-        <button>Pause</button>
-        <button>Resume</button>
+        <button id="btn_start" onclick="start()">Start</button>
+        <button id="btn_pause" onclick="pause()">Pause</button>
+        <button id="btn_resume" onclick="resume()">Resume</button>
       </div>
     </div>
+    <script src="script.js"></script>
   </body>
 </html>
