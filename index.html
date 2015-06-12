@@ -18,12 +18,12 @@ and open the template in the editor.
         float: left;
         margin-right: 10px;
       }
-      #level {
+      #level, #score {
         font-size: 1.2em;
         font-family: sans-serif;
         font-weight: bold
       }
-      #level, #actions {
+      #level, #score, #actions {
         margin-bottom: 7px;
         text-align: center;
         border: 1px solid #ccc;
@@ -42,9 +42,10 @@ and open the template in the editor.
     </style>
   </head>
   <body>
-    <canvas width="500" height="500"></canvas>
+    <canvas width="500" height="500" tabindex="1"></canvas>
     <div id="div_left">
-      <div id="level">1</div>
+      <div id="score">Score: <span id="span_score">0</span></div>
+      <div id="level">Level: <span id="span_level">1</span></div>
       <div id="actions">
         <button id="btn_start" onclick="start()">Start</button>
         <button id="btn_pause" onclick="pause()">Pause</button>

@@ -4,46 +4,46 @@ var squares = [];
 var food;
 var canvas, context;
 var gameOn = false;
-var repaintInterval = 500;
+var repaintInterval = 300;
 var foodColor = "red";
 var gridDimension = 10;
+var score = 0;
 
 window.onload = init;
 
 document.querySelector("body").addEventListener('keydown', function (event) {
   event.preventDefault();
-  if (event.which == 37) {
-    if (dx == 0) {
-      dx = -gridDimension;
-      dy = 0;
-    }
-  } else if (event.which == 38) {
-    if (dy == 0) {
-      dy = -gridDimension;
-      dx = 0;
-    }
-  } else if (event.which == 39) {
-    if (dx == 0) {
-      dx = gridDimension;
-      dy = 0;
-    }
-  } else if (event.which == 40) {
-    if (dy == 0) {
-      dy = gridDimension;
-      dx = 0;
+  if (gameOn) {
+    if (event.which == 37) {
+      if (dx == 0) {
+        dx = -gridDimension;
+        dy = 0;
+      }
+    } else if (event.which == 38) {
+      if (dy == 0) {
+        dy = -gridDimension;
+        dx = 0;
+      }
+    } else if (event.which == 39) {
+      if (dx == 0) {
+        dx = gridDimension;
+        dy = 0;
+      }
+    } else if (event.which == 40) {
+      if (dy == 0) {
+        dy = gridDimension;
+        dx = 0;
+      }
     }
   }
-  //37 gauche
-  //38 haut
-  //39 droite
-  //40 bas
-//  console.log(event.which);
+  canvas.focus();
 });
 
-function Square(x, y, color) {
+function Square(x, y, fColor, sColor) {
   this.x = x;
   this.y = y;
-  this.color = (color ? color : "black");
+  this.fColor = (fColor ? fColor : "black");
+  this.sColor = (sColor ? sColor : "white");
   this.width = gridDimension;
   this.height = gridDimension;
 }
@@ -53,12 +53,14 @@ function start() {
   repaint();
   document.querySelector("#btn_start").disabled = true;
   document.querySelector("#btn_pause").disabled = false;
+  canvas.focus();
 }
 
 function pause() {
   gameOn = false;
   document.querySelector("#btn_resume").disabled = false;
   document.querySelector("#btn_pause").disabled = true;
+  canvas.focus();
 }
 
 function resume() {
@@ -66,6 +68,7 @@ function resume() {
   document.querySelector("#btn_pause").disabled = false;
   document.querySelector("#btn_resume").disabled = true;
   repaint();
+  canvas.focus();
 }
 
 function init() {
@@ -82,6 +85,7 @@ function init() {
   dy = 0;
   food = new Square(0, 0, foodColor);
   changeFoodPosition();
+  canvas.focus();
 }
 
 function repaint() {
@@ -102,23 +106,39 @@ function repaint() {
 //}
 
 function paintSnake() {
-  //  decrease opacity with length
   var head = squares[0];
   var oldX = head.x;
   var oldY = head.y;
   head.x += dx;
   head.y += dy;
-  context.strokeStyle = head.color;
+  context.globalAlpha = 1;
+  context.strokeStyle = head.sColor;
+  context.fillStyle = head.fColor;
   context.strokeRect(head.x, head.y, head.width, head.height);
+  context.fillRect(head.x, head.y, head.width, head.height);
   for (var i = 1; i < squares.length; i++) {
+    context.globalAlpha = (squares.length - i) / squares.length;
     var x = squares[i].x, y = squares[i].y;
     squares[i].x = oldX;
     squares[i].y = oldY;
     oldX = x;
     oldY = y;
-    context.strokeStyle = squares[i].color;
+    context.strokeStyle = squares[i].sColor;
+    context.fillStyle = squares[i].fColor;
+    context.fillRect(squares[i].x, squares[i].y, squares[i].width, squares[i].height);
     context.strokeRect(squares[i].x, squares[i].y, squares[i].width, squares[i].height);
+    context.globalAlpha = 1;
+    if (head.x == food.x && head.y == food.y) {
+      foodEated();
+    }
   }
+}
+
+function foodEated() {
+  changeFoodPosition();
+  score++;
+  document.querySelector("#span_score").innerHTML = score;
+  squares.push(new Square(0, 0));
 }
 
 function changeFoodPosition() {
@@ -132,10 +152,7 @@ function changeFoodPosition() {
 }
 
 function showFood() {
-  context.fillStyle = food.color;
+  context.globalAlpha = 1;
+  context.fillStyle = food.fColor;
   context.fillRect(food.x, food.y, food.width, food.height);
-}
-
-function animate() {
-
 }
