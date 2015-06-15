@@ -1,35 +1,41 @@
 
 var x, y, dx, dy;
-var squares = [];
+var squares;
 var food;
 var canvas, context;
 var gameOn = false;
-var repaintInterval = 300;
+var repaintInterval = 250;
 var foodColor = "red";
 var gridDimension = 10;
 var score = 0;
+var level = 1;
 
-window.onload = init;
+window.onload = function () {
+
+  document.querySelector("#btn_start").disabled = false;
+  document.querySelector("#btn_pause").disabled = true;
+  document.querySelector("#btn_resume").disabled = true;
+};
 
 document.querySelector("body").addEventListener('keydown', function (event) {
   event.preventDefault();
   if (gameOn) {
-    if (event.which == 37) {
+    if (event.which == 37) {//left
       if (dx == 0) {
         dx = -gridDimension;
         dy = 0;
       }
-    } else if (event.which == 38) {
+    } else if (event.which == 38) {//up
       if (dy == 0) {
         dy = -gridDimension;
         dx = 0;
       }
-    } else if (event.which == 39) {
+    } else if (event.which == 39) {//right
       if (dx == 0) {
         dx = gridDimension;
         dy = 0;
       }
-    } else if (event.which == 40) {
+    } else if (event.which == 40) {//down
       if (dy == 0) {
         dy = gridDimension;
         dx = 0;
@@ -50,8 +56,34 @@ function Square(x, y, fColor, sColor) {
 
 function start() {
   gameOn = true;
-  init();
+  squares = [];
+  repaintInterval = 250;
+  score = 0;
+  level = 1;
+  canvas = document.querySelector("canvas");
+  context = canvas.getContext('2d');
+  document.querySelector("#span_level").innerHTML = level;
+  document.querySelector("#span_score").innerHTML = score;
+
+  document.querySelector("#btn_resume").disabled = true;
+  document.querySelector("#btn_pause").disabled = false;
+  document.querySelector("#btn_start").disabled = true;
+
+  context.fillStyle = 'white';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  var head = new Square(-gridDimension, 0);
+  squares.push(head);
+  squares.push(new Square(0, 0));
+  squares.push(new Square(0, 0));
+  dx = gridDimension;
+  dy = 0;
+  food = new Square(0, 0, foodColor);
+  changeFoodPosition();
+  canvas.focus();
+
   repaint();
+  canvas.focus();
 }
 
 function pause() {
@@ -63,12 +95,12 @@ function pause() {
 
 function gameOver() {
   gameOn = false;
-  
+
   context.fillStyle = 'black';
   context.globalAlpha = .7;
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.globalAlpha = 1;
-  
+
   var text = "Game Over";
   context.font = '30px Arial';
   context.fillStyle = 'white';
@@ -76,12 +108,18 @@ function gameOver() {
 //  var metrics = context.measureText(text);;
   var x = (canvas.width / 2);
   var y = canvas.height / 2;
-  context.fillText(text, x, y);  
+  context.fillText(text, x, y);
 
   document.querySelector("#btn_resume").disabled = true;
   document.querySelector("#btn_pause").disabled = true;
   document.querySelector("#btn_start").disabled = false;
   canvas.focus();
+}
+
+function levelUp() {
+  level++;
+  document.querySelector("#span_level").innerHTML = level;
+  repaintInterval -= 50;
 }
 
 function resume() {
@@ -122,12 +160,11 @@ function paintSnake() {
   var head = squares[0];
   var oldX = head.x;
   var oldY = head.y;
-//  head.x += dx;
-//  head.y += dy;
+  head.x += dx;
+  head.y += dy;
   for (var i = 1; i < squares.length; i++) {
     if (head.x != 0) {
       if (squares[i].x == head.x && squares[i].y == head.y) {
-        //collision
         gameOver();
         head.x -= dx;
         head.y -= dy;
@@ -164,6 +201,9 @@ function paintSnake() {
 function foodEated() {
   changeFoodPosition();
   score++;
+  if (score % 10 == 0) {
+    levelUp();
+  }
   document.querySelector("#span_score").innerHTML = score;
   squares.push(new Square(0, 0));
 }
